@@ -1,0 +1,34 @@
+# requirements.txt
+
+# Core dependencies
+torch>=1.9.0
+torchvision>=0.10.0
+numpy>=1.19.5
+pandas>=1.3.0
+matplotlib>=3.4.2
+seaborn>=0.11.1
+Pillow>=8.3.1
+tqdm>=4.61.2
+scikit-learn>=0.24.2
+
+# NLP dependencies
+nltk>=3.6.2
+spacy>=3.1.0
+
+# Configuration
+PyYAML>=5.4.1
+
+# Experiment tracking
+wandb>=0.12.0
+
+# Optional but recommended
+jupyter>=1.0.0
+notebook>=6.4.0
+ipywidgets>=7.6.3
+
+# For visualization
+wordcloud>=1.8.1
+opencv-python>=4.5.3
+
+# For CIDEr metric (optional)
+# pycocoevalcap>=1.2
