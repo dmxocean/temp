@@ -12,6 +12,13 @@ import matplotlib.pyplot as plt
 import seaborn as sns
 from tqdm import tqdm
 
+# Standardized visualization settings
+STANDARD_DPI = 300
+STANDARD_FIGSIZE = (10, 8)
+FONT_TITLE = 16
+FONT_LABEL = 14
+FONT_TEXT = 12
+
 from ..training.metrics import calculate_bleu, calculate_cider
 from ..preprocessing.vocabulary import Vocabulary
 from ..utils.io import save_json, load_json
@@ -149,16 +156,19 @@ class ModelEvaluator:
         
         df = pd.DataFrame(data)
         
-        # Create plot
-        plt.figure(figsize=(10, 6))
+        # Create plot with standardized settings
+        plt.figure(figsize=STANDARD_FIGSIZE)
         sns.barplot(x='Metric', y='Score', hue='Model', data=df)
-        plt.title('Model Performance Comparison')
-        plt.ylabel('Score (%)')
-        plt.legend(title='Model')
+        plt.title('Model Performance Comparison', fontsize=FONT_TITLE)
+        plt.xlabel('Metric', fontsize=FONT_LABEL)
+        plt.ylabel('Score (%)', fontsize=FONT_LABEL)
+        plt.legend(title='Model', fontsize=FONT_TEXT, title_fontsize=FONT_TEXT)
         plt.grid(True, alpha=0.3)
+        plt.xticks(fontsize=FONT_TEXT)
+        plt.yticks(fontsize=FONT_TEXT)
         
         if save_path:
-            plt.savefig(save_path, dpi=300, bbox_inches='tight')
+            plt.savefig(save_path, dpi=STANDARD_DPI, bbox_inches='tight', facecolor='white')
         
         plt.show()
     

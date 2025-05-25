@@ -8,6 +8,14 @@ import numpy as np
 import matplotlib.pyplot as plt
 import torch
 from typing import List, Optional
+import os
+
+# Standardized settings matching captioning.py
+STANDARD_DPI = 300
+STANDARD_FIGSIZE = (14, 14)  # Square format
+ATTENTION_GRID_SIZE = 3      # Size for each subplot in grid
+FONT_TITLE = 16
+FONT_TEXT = 12
 
 def visualize_attention(image: np.ndarray, caption: List[str], 
                        attention_weights: List[torch.Tensor], 
@@ -36,7 +44,7 @@ def visualize_attention(image: np.ndarray, caption: List[str],
         ncols = min(5, num_words + 1)
         nrows = (num_words + 1 + ncols - 1) // ncols
     
-    fig, axes = plt.subplots(nrows=nrows, ncols=ncols, figsize=(ncols*3, nrows*3))
+    fig, axes = plt.subplots(nrows=nrows, ncols=ncols, figsize=(ncols*ATTENTION_GRID_SIZE, nrows*ATTENTION_GRID_SIZE))
     
     # Handle different subplot layouts correctly
     if nrows == 1 and ncols == 1:
@@ -51,7 +59,7 @@ def visualize_attention(image: np.ndarray, caption: List[str],
     
     # Plot original image
     axes_flat[0].imshow(image)
-    axes_flat[0].set_title('Original Image')
+    axes_flat[0].set_title('Original Image', fontsize=FONT_TEXT)
     axes_flat[0].axis('off')
     
     # Plot attention for each selected word
@@ -76,7 +84,7 @@ def visualize_attention(image: np.ndarray, caption: List[str],
         # Plot the word-specific attention
         axes_flat[idx + 1].imshow(image)
         axes_flat[idx + 1].imshow(att_weight, alpha=0.6, cmap='hot')
-        axes_flat[idx + 1].set_title(word)
+        axes_flat[idx + 1].set_title(word, fontsize=FONT_TEXT)
         axes_flat[idx + 1].axis('off')
     
     # Hide any unused subplots
@@ -86,7 +94,43 @@ def visualize_attention(image: np.ndarray, caption: List[str],
     plt.tight_layout()
     
     if save_path:
-        plt.savefig(save_path, bbox_inches='tight', dpi=300)
+        plt.savefig(save_path, bbox_inches='tight', dpi=STANDARD_DPI, facecolor='white')
+    
+    plt.show()
+
+def visualize_single_attention(image: np.ndarray, word: str, 
+                              attention_weight: torch.Tensor, 
+                              save_path: Optional[str] = None,
+                              figsize: tuple = STANDARD_FIGSIZE):
+    """
+    Visualize attention for a single word with better aspect ratio
+    
+    Args:
+        image: Original image as numpy array
+        word: The word being attended to
+        attention_weight: Attention weight tensor for this word
+        save_path: Optional path to save the figure
+        figsize: Figure size in inches (width, height)
+    """
+    plt.figure(figsize=figsize)
+    
+    # Reshape attention weights
+    att_size = int(np.sqrt(attention_weight.shape[0]))
+    att_weight = attention_weight.reshape(att_size, att_size)
+    
+    # Resize attention map to match image size
+    h, w = image.shape[:2]
+    att_weight = np.repeat(np.repeat(att_weight, h//att_size, axis=0), w//att_size, axis=1)
+    att_weight = att_weight[:h, :w]
+    
+    # Display image with attention overlay
+    plt.imshow(image)
+    plt.imshow(att_weight, alpha=0.5, cmap='hot')
+    plt.title(f'Attention for: "{word}"', fontsize=FONT_TITLE, pad=10)
+    plt.axis('off')
+    
+    if save_path:
+        plt.savefig(save_path, bbox_inches='tight', dpi=STANDARD_DPI, facecolor='white')
     
     plt.show()
 
@@ -157,3 +201,36 @@ def create_attention_grid(image: np.ndarray, caption: List[str],
         grid_image[y_start:y_end, x_start:x_end] = blended
     
     return grid_image
+
+def create_attention_sequence(image: np.ndarray, caption: List[str], 
+                            attention_weights: List[torch.Tensor],
+                            save_dir: Optional[str] = None,
+                            figsize: tuple = STANDARD_FIGSIZE):
+    """
+    Create individual attention images for each word in sequence
+    
+    Args:
+        image: Original image
+        caption: List of caption words
+        attention_weights: List of attention weight tensors
+        save_dir: Directory to save individual images
+        figsize: Figure size for each image
+        
+    Returns:
+        List of file paths if save_dir is provided
+    """
+    saved_paths = []
+    
+    for i, (word, att_weight) in enumerate(zip(caption, attention_weights)):
+        if save_dir:
+            save_path = os.path.join(save_dir, f'attention_{i:02d}_{word}.png')
+            os.makedirs(save_dir, exist_ok=True)
+        else:
+            save_path = None
+            
+        visualize_single_attention(image, word, att_weight, save_path, figsize)
+        
+        if save_path:
+            saved_paths.append(save_path)
+    
+    return saved_paths

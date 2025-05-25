@@ -13,6 +13,14 @@ import os
 from ..preprocessing.transforms import denormalize_image
 from ..preprocessing.vocabulary import Vocabulary
 
+# Standardized settings for all visualizations
+STANDARD_DPI = 300
+STANDARD_FIGSIZE = (10, 10)  # Square format for consistency
+TRAINING_FIGSIZE = (16, 8)   # Wide format for training curves
+FONT_TITLE = 16
+FONT_LABEL = 14
+FONT_TEXT = 12
+
 def visualize_sample_captions(model: torch.nn.Module, dataset, vocab: Vocabulary, 
                             device: torch.device, num_samples: int = 3, 
                             save_dir: Optional[str] = None):
@@ -69,17 +77,25 @@ def visualize_sample_captions(model: torch.nn.Module, dataset, vocab: Vocabulary
             print(f"Reference: {reference_caption}")
             print(f"Generated: {generated_caption}")
             
-            # Display the image
-            plt.figure(figsize=(10, 8))
+            # Display the image with standardized settings
+            fig, ax = plt.subplots(figsize=STANDARD_FIGSIZE)
+            
             img = denormalize_image(image[0])
-            plt.imshow(img)
-            plt.title(f"Image: {img_name}")
-            plt.axis('off')
+            ax.imshow(img)
+            
+            # Add captions as text below the image
+            caption_text = f"Reference: {reference_caption}\nGenerated: {generated_caption}"
+            fig.text(0.5, 0.02, caption_text, ha='center', fontsize=FONT_TEXT, 
+                    wrap=True, bbox=dict(boxstyle="round,pad=0.5", facecolor='wheat', alpha=0.7))
+            
+            ax.set_title(f"Sample {i+1}: {img_name}", fontsize=FONT_TITLE, pad=20)
+            ax.axis('off')
+            
             plt.tight_layout()
             
             if save_dir:
                 save_path = os.path.join(save_dir, f'caption_sample_{i+1}.png')
-                plt.savefig(save_path, dpi=300, bbox_inches='tight')
+                plt.savefig(save_path, dpi=STANDARD_DPI, bbox_inches='tight', facecolor='white')
             
             plt.show()
             
@@ -103,8 +119,8 @@ def plot_training_history(history: Dict, model_name: str = "Model",
         model_name: Name of the model
         save_path: Optional path to save the figure
     """
-    # Create a figure
-    plt.figure(figsize=(14, 6))
+    # Create a figure with standardized size
+    plt.figure(figsize=TRAINING_FIGSIZE)
     
     # Plot loss curves
     plt.subplot(1, 2, 1)
@@ -116,11 +132,11 @@ def plot_training_history(history: Dict, model_name: str = "Model",
     if 'val_epochs' in history and history['val_losses']:
         plt.plot(history['val_epochs'], history['val_losses'], 'o-', label='Val Loss')
     
-    plt.xlabel('Epoch')
-    plt.ylabel('Loss')
-    plt.title(f'{model_name} - Training and Validation Loss')
-    plt.legend()
-    plt.grid(True)
+    plt.xlabel('Epoch', fontsize=FONT_LABEL)
+    plt.ylabel('Loss', fontsize=FONT_LABEL)
+    plt.title(f'{model_name} - Training and Validation Loss', fontsize=FONT_TITLE)
+    plt.legend(fontsize=FONT_TEXT)
+    plt.grid(True, alpha=0.3)
     
     # Plot BLEU scores if available
     if 'bleu_epochs' in history and history['bleu_scores']:
@@ -138,18 +154,18 @@ def plot_training_history(history: Dict, model_name: str = "Model",
         plt.plot(bleu_epochs, bleu2, 'o-', label='BLEU-2')
         plt.plot(bleu_epochs, bleu3, 'o-', label='BLEU-3')
         plt.plot(bleu_epochs, bleu4, 'o-', label='BLEU-4')
-        plt.xlabel('Epoch')
-        plt.ylabel('BLEU Score')
-        plt.title(f'{model_name} - BLEU Scores')
-        plt.legend()
-        plt.grid(True)
+        plt.xlabel('Epoch', fontsize=FONT_LABEL)
+        plt.ylabel('BLEU Score', fontsize=FONT_LABEL)
+        plt.title(f'{model_name} - BLEU Scores', fontsize=FONT_TITLE)
+        plt.legend(fontsize=FONT_TEXT)
+        plt.grid(True, alpha=0.3)
     
     # Show the figure
     plt.tight_layout()
     
-    # Save the figure
+    # Save the figure with standardized settings
     if save_path:
-        plt.savefig(save_path, dpi=300)
+        plt.savefig(save_path, dpi=STANDARD_DPI, bbox_inches='tight', facecolor='white')
     
     plt.show()
 
@@ -200,14 +216,14 @@ def compare_models(baseline_model: torch.nn.Module, attention_model: torch.nn.Mo
             print(f"Baseline: {baseline_caption}")
             print(f"Attention: {attention_caption}")
             
-            # Display image and captions
-            plt.figure(figsize=(12, 10))
+            # Display image and captions with standardized settings
+            plt.figure(figsize=STANDARD_FIGSIZE)
             
             # Display image
             plt.subplot(2, 1, 1)
             img = denormalize_image(image[0])
             plt.imshow(img)
-            plt.title(f"Image: {img_name}")
+            plt.title(f"Image: {img_name}", fontsize=FONT_TITLE)
             plt.axis('off')
             
             # Display captions comparison
@@ -218,13 +234,14 @@ def compare_models(baseline_model: torch.nn.Module, attention_model: torch.nn.Mo
                 f"Baseline: {baseline_caption}\n\n"
                 f"Attention: {attention_caption}"
             )
-            plt.text(0.5, 0.5, comparison_text, ha='center', va='center', fontsize=12, wrap=True)
+            plt.text(0.5, 0.5, comparison_text, ha='center', va='center', fontsize=FONT_TEXT, 
+                    wrap=True, bbox=dict(boxstyle="round,pad=0.5", facecolor='lightgray', alpha=0.7))
             
             plt.tight_layout()
             
             if save_dir:
                 save_path = os.path.join(save_dir, f'model_comparison_{i+1}.png')
-                plt.savefig(save_path, dpi=300, bbox_inches='tight')
+                plt.savefig(save_path, dpi=STANDARD_DPI, bbox_inches='tight', facecolor='white')
             
             plt.show()
             

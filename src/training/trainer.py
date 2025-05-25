@@ -10,6 +10,7 @@ import torch.nn as nn
 from torch.utils.data import DataLoader
 from typing import Dict, Optional, Tuple
 from tqdm import tqdm
+import wandb
 
 from .metrics import calculate_loss, calculate_bleu
 from ..utils.logger import VerboseLogger, AverageMeter
@@ -165,6 +166,10 @@ class Trainer:
                 # Log to wandb
                 if self.wandb_logger:
                     self.wandb_logger.log_batch(i, total_loss.item(), self.global_step)
+                elif wandb.run is not None:
+                    # Direct logging for sweep runs
+                    if i % self.print_frequency == 0:
+                        wandb.log({"batch_loss": total_loss.item()}, step=self.global_step)
                 
                 # Update global step
                 self.global_step += 1
@@ -403,6 +408,15 @@ class Trainer:
                 self.wandb_logger.log_epoch(epoch_num, train_loss, 
                                           val_loss if should_validate else None,
                                           bleu if should_calculate_bleu else None)
+            elif wandb.run is not None:
+                # Direct logging for sweep runs
+                log_dict = {"epoch": epoch_num, "train_loss": train_loss}
+                if should_validate:
+                    log_dict["val_loss"] = val_loss
+                if should_calculate_bleu:
+                    for key, value in bleu.items():
+                        log_dict[key] = value
+                wandb.log(log_dict)
             
             # Save regular checkpoint
             save_checkpoint({
