@@ -26,13 +26,13 @@ class VerboseLogger:
         """Log training start"""
         self.start_time = time.time()
         print(f"\nTraining {model_name} model for {num_epochs} epochs...")
-        print("=" * 80)
+        print()
         
     def start_epoch(self, epoch: int, num_epochs: int):
         """Log epoch start"""
         self.epoch_start_time = time.time()
-        print(f"\nEpoch {epoch}/{num_epochs}")
-        print("-" * 40)
+        print(f"Epoch {epoch}/{num_epochs}")
+        print()
         
     def log_batch(self, batch_idx: int, num_batches: int, loss: float, 
                   batch_time: float):
@@ -68,8 +68,8 @@ class VerboseLogger:
         """Log training completion"""
         if self.start_time:
             total_time = time.time() - self.start_time
-            print(f"\nTraining completed in {total_time/60:.1f} minutes")
-            print("=" * 80)
+            print(f"Training completed in {total_time/60:.1f} minutes")
+            print()
             
     def debug_tensor(self, name: str, tensor: torch.Tensor, level: int = 0):
         """Log tensor debug information"""
