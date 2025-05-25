@@ -15,7 +15,7 @@ from ..preprocessing.vocabulary import Vocabulary
 
 # Standardized settings for all visualizations
 STANDARD_DPI = 300
-STANDARD_FIGSIZE = (10, 10)  # Square format for consistency
+STANDARD_FIGSIZE = (14, 14)  # Square format for consistency
 TRAINING_FIGSIZE = (16, 8)   # Wide format for training curves
 FONT_TITLE = 16
 FONT_LABEL = 14
