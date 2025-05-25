@@ -261,7 +261,7 @@ class BaselineCaptionModel(nn.Module):
                     break
                 
                 # Skip special tokens
-                if word not in ["<PAD>", "< SOS >"]:
+                if word not in ["<PAD>", "<SOS>"]:
                     caption_words.append(word)
             
             caption = " ".join(caption_words)

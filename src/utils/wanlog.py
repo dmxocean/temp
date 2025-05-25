@@ -42,7 +42,7 @@ class WandbLogger:
     def update_config(self, config: Dict[str, Any]):
         """Update wandb config with model and training parameters"""
         if self.enabled:
-            wandb.config.update(config)
+            wandb.config.update(config, allow_val_change=True)
             
     def log_metrics(self, metrics: Dict[str, float], step: int):
         """Log training metrics"""

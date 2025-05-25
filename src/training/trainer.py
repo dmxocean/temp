@@ -115,7 +115,7 @@ class Trainer:
                     outputs, alphas = self.model(images, captions, lengths)
                     
                     # Prepare targets (shift by one)
-                    targets = captions[:, 1:]  # Remove < SOS >
+                    targets = captions[:, 1:]  # Remove <SOS>
                     outputs = outputs[:, :-1, :]  # Remove last prediction
                     
                     # Reshape for loss calculation
@@ -133,7 +133,7 @@ class Trainer:
                     outputs = self.model(images, captions, lengths)
                     
                     # Prepare targets (shift by one)
-                    targets = captions[:, 1:]  # Remove < SOS >
+                    targets = captions[:, 1:]  # Remove <SOS>
                     outputs = outputs[:, :-1, :]  # Remove last prediction
                     
                     # Reshape for loss calculation
@@ -209,7 +209,7 @@ class Trainer:
                         outputs, alphas = self.model(images, captions, lengths)
                         
                         # Prepare targets (shift by one)
-                        targets = captions[:, 1:]  # Remove < SOS >
+                        targets = captions[:, 1:]  # Remove <SOS>
                         outputs = outputs[:, :-1, :]  # Remove last prediction
                         
                         # Reshape for loss calculation
@@ -227,7 +227,7 @@ class Trainer:
                         outputs = self.model(images, captions, lengths)
                         
                         # Prepare targets (shift by one)
-                        targets = captions[:, 1:]  # Remove < SOS >
+                        targets = captions[:, 1:]  # Remove <SOS>
                         outputs = outputs[:, :-1, :]  # Remove last prediction
                         
                         # Reshape for loss calculation

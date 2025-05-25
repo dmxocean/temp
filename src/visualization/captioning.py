@@ -59,7 +59,7 @@ def visualize_sample_captions(model: torch.nn.Module, dataset, vocab: Vocabulary
                 token = vocab.itos[token_idx.item()]
                 if token == "<EOS>":
                     break
-                if token not in ["<PAD>", "< SOS >"]:
+                if token not in ["<PAD>", "<SOS>"]:
                     reference_caption.append(token)
             reference_caption = ' '.join(reference_caption)
             
@@ -191,7 +191,7 @@ def compare_models(baseline_model: torch.nn.Module, attention_model: torch.nn.Mo
             
             # Convert ground truth caption to words
             gt_words = [vocab.itos[idx.item()] for idx in caption
-                      if idx.item() < len(vocab) and vocab.itos[idx.item()] not in ["<PAD>", "< SOS >", "<EOS>"]]
+                      if idx.item() < len(vocab) and vocab.itos[idx.item()] not in ["<PAD>", "<SOS>", "<EOS>"]]
             gt_caption = ' '.join(gt_words)
             
             # Print image name and captions

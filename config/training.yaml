@@ -1,8 +1,8 @@
 # config/training.yaml
 
 training:
-  num_epochs: 10
-  batch_size: 32
+  num_epochs: 20
+  batch_size: 64
   learning_rate: 3.0e-4
   weight_decay: 1.0e-5
   clip_grad_norm: 5.0

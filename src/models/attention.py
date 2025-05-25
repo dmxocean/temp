@@ -270,7 +270,7 @@ class AttentionDecoderRNN(nn.Module):
         sampled_ids = torch.zeros(batch_size, max_length, dtype=torch.long).to(encoder_out.device)
         alphas = torch.zeros(batch_size, max_length, num_pixels).to(encoder_out.device)
         
-        # Start with < SOS > token (index 1)
+        # Start with <SOS> token (index 1)
         input_word = torch.ones(batch_size, dtype=torch.long).to(encoder_out.device)
         
         # Generate words one by one
@@ -439,7 +439,7 @@ class AttentionCaptionModel(nn.Module):
                     break
                 
                 # Skip special tokens
-                if word not in ["<PAD>", "< SOS >"]:
+                if word not in ["<PAD>", "<SOS>"]:
                     caption_words.append(word)
                     attention_weights.append(alphas[0, i].cpu())
             
